@@ -1,16 +1,14 @@
 <script>
 export default {
+  props: ['waitingTicks', 'successChance', 'ticks'],
   data() {
     return {
-      ticksLocked : 0,
-      milisPerTick : 100,
-      watingTicks : 10,
-      successChance : 10
+      ticksLocked : 0
     }
   },
   methods:{
     onClick(){
-      this.ticksLocked++;
+      
     }
   },
   computed:{
@@ -31,7 +29,7 @@ export default {
         return "active";
       }
       else{
-        return "active";
+        return "inactive";
       }
     },
     progress(){
@@ -46,7 +44,7 @@ export default {
 </template>
 
 <style scoped>
-.active{
+.inactive{
   background : linear-gradient(to right, blue v-bind('progress'), rgba(0,0,0,0) v-bind('progress'));
 }
 </style>

@@ -1,11 +1,11 @@
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
 import CrabButton from './components/CrabButton.vue'
+import TickTimer from './components/TickTimer.vue'
+import MrKrabs from './components/MrKrabs.vue'
 </script>
 
 <template>
-<CrabButton></CrabButton>
+<MrKrabs @tick="updateTicks()"></MrKrabs>
 </template>
 
 <style scoped>
