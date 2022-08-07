@@ -1,6 +1,7 @@
 <script>
 export default {
-  props: ['waitingTicks', 'successChance', 'ticks'],
+  props: ['waitingTicks', 'successChance', 'millisPerTick'],
+  emits: ['crab'],
   data() {
     return {
       ticksLocked : 0
@@ -8,43 +9,40 @@ export default {
   },
   methods:{
     onClick(){
-      
+      let waitingLoop = setInterval(wait => {
+        this.ticksLocked++;
+      if(this.ticksLocked >= this.waitingTicks){
+        this.ticksLocked = 0;
+        if(Math.floor(Math.random() * this.successChance) == 0){
+          this.$emit('crab');
+        }
+        clearInterval(waitingLoop);
+      }
+    }, this.millisPerTick);
     }
   },
   computed:{
-    buttonText(){
-      if (this.ticksLocked == 0) {
-        return "Search for crabs";
-      }
-      else{
-        let message = "Searching for crabs"
-        for(let i = 0; i < this.ticksLocked % 4; i++){
-          message += '.';
-        }
-        return message;
-      }
-    },
-    buttonClass(){
-      if(this.ticksLocked == 0){
-        return "active";
-      }
-      else{
-        return "inactive";
-      }
-    },
     progress(){
-      return (String(this.ticksLocked / this.watingTicks * 100) + '%');
-    }
+        return (this.ticksLocked / this.waitingTicks * 100) + '%'
+      },
+      isDisabled(){
+        if(this.ticksLocked == 0){
+          return false;
+        }
+        else{
+          return true;
+        }
+      }
   }
 }
 </script>
 
 <template>
-<button :class="buttonClass" @click="onClick()">{{buttonText}}</button>
+<button :disabled="isDisabled"  @click="onClick()">Search For Crabs</button>
 </template>
 
 <style scoped>
-.inactive{
+button{
   background : linear-gradient(to right, blue v-bind('progress'), rgba(0,0,0,0) v-bind('progress'));
 }
 </style>

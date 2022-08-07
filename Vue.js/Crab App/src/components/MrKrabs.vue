@@ -1,27 +1,26 @@
 <script setup>
 import CrabButton from './CrabButton.vue'
-import TickTimer from './TickTimer.vue'
 </script>
 
 <script>
 export default {
-  emits: ['tick'],
+  emits: ['crab'],
   data() {
     return {
-      ticks: 0
+      crabs: 0
     }
   },
   methods:{
-    updateTicks(){
-      this.ticks++;
+    crabFound(){
+      this.crabs++;
     }
   }
 }
 </script>
 
 <template>
-<TickTimer millisPerTick = "100"></TickTimer>
-<CrabButton waitingTicks="10" successChance="100" :ticks="ticks"></CrabButton>
+<p>Crabs: {{this.crabs}}</p>
+<CrabButton @crab="crabFound" waitingTicks="10" successChance="3" millisPerTick="100"></CrabButton>
 </template>
 
 <style scoped>
