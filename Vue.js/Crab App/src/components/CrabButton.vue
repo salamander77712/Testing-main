@@ -38,7 +38,9 @@ export default {
 </script>
 
 <template>
-<button :disabled="isDisabled"  @click="onClick()">Search For Crabs</button>
+<div>
+  <button :disabled="isDisabled"  @click="onClick()">Search For Crabs</button>
+</div>
 </template>
 
 <style scoped>
