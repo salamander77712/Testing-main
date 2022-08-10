@@ -1,3 +1,8 @@
+<script setup>
+import LineGraph from './LineGraph.vue';
+</script>
+
+
 <script>
 export default {
   props: {
@@ -38,12 +43,17 @@ export default {
     precision:{
       type: Number,
       default: 2
+    },
+    priceHistoryLength:{
+      type: Number,
+      default: 4
     }
   },
   emits:['buy', 'sell'],
   data() {
     return {
-      currentPrice: this.startingPrice
+      currentPrice: this.startingPrice,
+      priceHistory: []
     }
   },
   methods:{
@@ -69,6 +79,10 @@ export default {
           this.currentPrice = newPrice;
         }
       }
+      this.priceHistory.push(this.priceRounded);
+      if(this.priceHistory.length > this.priceHistoryLength){
+        this.priceHistory.splice(0, 1);
+      }
     }
   },
   mounted(){
@@ -77,6 +91,16 @@ export default {
   computed:{
     priceRounded(){
       return this.currentPrice.toFixed(this.precision);
+    },
+    chartData(){
+      return this.priceHistory;
+    },
+    labels(){
+      let output = [];
+      for (let i = -this.priceHistoryLength + 1; i <= 0; i++) {
+        output.push(i);
+      }
+      return output;
     }
   }
 }
@@ -88,9 +112,21 @@ export default {
   <p>1 {{this.currencyFrom}} is currently worth {{this.priceRounded}} {{this.currencyTo}}</p>
   <button @click="$emit('buy', this.priceRounded)">Buy 1 {{this.currencyFrom}}</button>
   <button @click="$emit('sell', this.priceRounded)">Sell 1 {{this.currencyFrom}}</button>
+  <div class="graph">
+  <LineGraph
+  :labels="this.labels" 
+  :values="this.chartData"
+  :title="this.currencyFrom + ' To ' + this.currencyTo"
+  :min="0"
+  :max="5"
+  >
+  </LineGraph></div>
 </div>
 </template>
 
 <style scoped>
-
+.graph{
+  max-width: 200px;
+  max-height: 200px;
+}
 </style>

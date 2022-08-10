@@ -36,7 +36,16 @@ export default {
 <template>
 <p>Crabs:{{this.crabs}} $:{{this.dollars.toFixed(2)}}</p>
 <CrabButton @crab="crabFound" waitingTicks="10" successChance="1" millisPerTick="100"></CrabButton>
-<RandForex @sell="crabSold" @buy="crabBought" currencyFrom="Crab" currencyTo="Dollars" :minPrice="Number(0.5)" :maxPrice="Number(5)" :maxVolitlity="Number(0.5)"></RandForex>
+<RandForex 
+@sell="crabSold" 
+@buy="crabBought" 
+currencyFrom="Crab" 
+currencyTo="Dollars" 
+:minPrice="Number(0.5)" 
+:maxPrice="Number(5)" 
+:maxVolitlity="Number(0.5)"
+:priceHistoryLength="10"
+></RandForex>
 </template>
 
 <style scoped>
