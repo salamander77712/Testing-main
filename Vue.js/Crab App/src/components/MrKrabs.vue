@@ -9,7 +9,8 @@ export default {
   data() {
     return {
       crabs: 0,
-      dollars: 0
+      dollars: 0,
+      doge: 0
     }
   },
   methods:{
@@ -18,7 +19,6 @@ export default {
     },
     crabSold(dollarsPerCrab){
       if(this.crabs >= 1){
-        console.log(dollarsPerCrab);
         this.crabs--;
         this.dollars += Number(dollarsPerCrab);
       }
@@ -28,13 +28,25 @@ export default {
         this.dollars -= dollarsPerCrab;
         this.crabs++;
       }
+    },
+    dogeSold(dollarsPerDoge){
+      if(this.doge >= 1){
+        this.doge--;
+        this.dollars += Number(dollarsPerDoge);
+      }
+    },
+    dogeBought(dollarsPerDoge){
+      if(this.dollars >= dollarsPerDoge){
+        this.dollars -= dollarsPerDoge;
+        this.doge++;
+      }
     }
   }
 }
 </script>
 
 <template>
-<p>Crabs:{{this.crabs}} $:{{this.dollars.toFixed(2)}}</p>
+<p>Crabs:{{this.crabs}} $:{{this.dollars.toFixed(2)}} DogeCoin:{{this.doge}}</p>
 <CrabButton @crab="crabFound" waitingTicks="10" successChance="1" millisPerTick="100"></CrabButton>
 <RandForex 
 @sell="crabSold" 
@@ -45,6 +57,19 @@ currencyTo="Dollars"
 :maxPrice="Number(5)" 
 :maxVolitlity="Number(0.5)"
 :priceHistoryLength="10"
+></RandForex>
+<RandForex 
+@sell="dogeSold" 
+@buy="dogeBought" 
+currencyFrom="DogeCoin" 
+currencyTo="Dollars" 
+:minPrice="Number(0)" 
+:maxPrice="Number(10000)" 
+:maxVolitlity="Number(1)"
+:minVolitlity="Number(0.1)"
+:precision="2"
+:startingPrice="1"
+:priceHistoryLength="100"
 ></RandForex>
 </template>
 
