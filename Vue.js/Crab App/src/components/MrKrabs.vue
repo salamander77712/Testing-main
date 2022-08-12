@@ -1,16 +1,22 @@
 <script setup>
 import CrabButton from './CrabButton.vue'
 import RandForex from './randForex.vue'
+import CrabBreeding from './CrabBreeding.vue'
+import settings from '../data/settings.json'
 </script>
 
 <script>
 export default {
-  emits: ['crab', 'buy', 'sell'],
+  emits: ['crab', 'buy', 'sell', 'foodBought', 'crabsBreed'],
   data() {
     return {
       crabs: 0,
       dollars: 0,
-      doge: 0
+      doge: 0,
+      crabFood: 0,
+      crabSpeedUpgrade: 1,
+      crabWaitingUpgrade: 1,
+      crabChanceUpgrade: 1
     }
   },
   methods:{
@@ -40,35 +46,74 @@ export default {
         this.dollars -= dollarsPerDoge;
         this.doge++;
       }
+    },
+    foodBought(foodCost){
+      if(this.dollars >= foodCost){
+        this.dollars -= foodCost;
+        this.crabFood++;
+      }
+    },
+    crabsBreed(amount){
+      if(this.crabFood >= amount){
+        this.crabFood -= amount;
+        this.crabs += amount;
+      }
+    }
+  },
+  computed: {
+    crabWaitingTime(){
+      return settings.crabWaitingTime * this.crabWaitingUpgrade;
+    },
+    crabChance(){
+      return settings.crabChance * this.crabChanceUpgrade;
+    },
+    crabSpeed(){
+      return settings.crabSpeed * this.crabSpeedUpgrade;
     }
   }
 }
 </script>
 
 <template>
-<p>Crabs:{{this.crabs}} $:{{this.dollars.toFixed(2)}} DogeCoin:{{this.doge}}</p>
-<CrabButton @crab="crabFound" waitingTicks="10" successChance="1" millisPerTick="100"></CrabButton>
+<p>Crabs: {{this.crabs}}</p>
+<p>${{this.dollars.toFixed(2)}}</p>
+<p>DogeCoin: {{this.doge}}</p>
+<p>CrabFood: {{this.crabFood}}</p>
+<CrabButton @crab="crabFound" :waitingTicks="this.crabWaitingTime" :successChance="this.crabChance" :millisPerTick="this.crabSpeed"></CrabButton>
+<br>
+<crabBreeding 
+:crabFood="this.crabFood"
+:crabs="this.crabs"
+:dollars="this.dollars"
+:breedRate="1.25"
+:millisPerTick="100"
+:ticksPerBreed="100"
+:crabFoodCost="1.5"
+@foodBought="this.foodBought"
+@crabsBreed="this.crabsBreed"
+></crabBreeding>
 <RandForex 
 @sell="crabSold" 
 @buy="crabBought" 
 currencyFrom="Crab" 
 currencyTo="Dollars" 
-:minPrice="Number(0.5)" 
-:maxPrice="Number(5)" 
-:maxVolitlity="Number(0.5)"
+:minPrice="Number(settings.crabMinPrice)" 
+:maxPrice="Number(settings.crabMaxPrice)" 
+:maxVolitlity="Number(settings.crabMaxVolitility)"
 :priceHistoryLength="10"
+:startingPrice="Number(settings.crabStartingPrice)"
 ></RandForex>
 <RandForex 
 @sell="dogeSold" 
 @buy="dogeBought" 
 currencyFrom="DogeCoin" 
 currencyTo="Dollars" 
-:minPrice="Number(0)" 
-:maxPrice="Number(10000)" 
-:maxVolitlity="Number(1)"
-:minVolitlity="Number(0.1)"
+:minPrice="settings.dogeMinPrice" 
+:maxPrice="settings.dogeMaxPrice" 
+:maxVolitlity="settings.dogeMaxVolitlity"
+:minVolitlity="settings.dogeMinVolitlity"
 :precision="2"
-:startingPrice="1"
+:startingPrice="settings.dogeStartingPrice"
 :priceHistoryLength="100"
 ></RandForex>
 </template>

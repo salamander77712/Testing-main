@@ -1,0 +1,14 @@
+{
+    "crabChance" : 3,
+    "crabMinPrice" : 0.5,
+    "crabMaxPrice" : 5,
+    "crabMaxVolitility" : 0.5,
+    "crabStartingPrice" : 1,
+    "crabWaitingTime": 10,
+    "crabSpeed" : 100,
+    "dogeMinPrice" : 0,
+    "dogeMaxPrice" : 1000,
+    "dogeMinVolitlity" : 0.5,
+    "dogeMaxVolitlity" : 10,
+    "dogeStartingPrice" : 1
+}
