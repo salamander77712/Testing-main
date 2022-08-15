@@ -20,48 +20,73 @@ export default {
       trappingLevel: 0,
       trappingXP: 0,
       trappingXpToLevel: 10,
-      trappingXpIncrease: 1.1
+      trappingXpIncrease: 1.1,
+      husbandryLevel: 0,
+      husbandryXP: 0,
+      husbandryXpToLevel: 10,
+      husbandryXpIncrease: 1.25,
+      barterLevel: 0,
+      barterXP: 0,
+      barterXpToLevel: 10,
+      barterXpIncrease: 1.25,
+      investingLevel: 0,
+      investingXP: 0,
+      investingXpToLevel: 100,
+      investingXpIncrease: 1.1,
+      startingInvestingFee: 0.1,
+      startingFoodPrice: 1,
+      startingBreedingrate: 1.25
     }
   },
   methods:{
     crabFound(){
-      this.crabs++;
+      this.crabs += this.trappingAdjustemnt;
       this.addTrappingXP();
     },
     crabSold(dollarsPerCrab){
+      let fee = (this.investingFee * dollarsPerCrab) + dollarsPerCrab
       if(this.crabs >= 1){
         this.crabs--;
-        this.dollars += Number(dollarsPerCrab);
+        this.dollars += dollarsPerCrab - fee;
+        this.addInvestingXP(dollarsPerCrab);
       }
     },
     crabBought(dollarsPerCrab){
-      if(this.dollars >= dollarsPerCrab){
-        this.dollars -= dollarsPerCrab;
+      let fee = (this.investingFee * dollarsPerCrab) + dollarsPerCrab
+      if(this.dollars >= dollarsPerCrab + fee){
+        this.dollars -= dollarsPerCrab + fee;
         this.crabs++;
+        this.addInvestingXP(dollarsPerCrab);
       }
     },
     dogeSold(dollarsPerDoge){
+      let fee = (this.investingFee * dollarsPerDoge) + dollarsPerDoge
       if(this.doge >= 1){
         this.doge--;
-        this.dollars += Number(dollarsPerDoge);
+        this.dollars += dollarsPerDoge - fee;
+        this.addInvestingXP(dollarsPerDoge);
       }
     },
     dogeBought(dollarsPerDoge){
-      if(this.dollars >= dollarsPerDoge){
-        this.dollars -= dollarsPerDoge;
+      let fee = (this.investingFee * dollarsPerDoge) + dollarsPerDoge
+      if(this.dollars >= dollarsPerDoge + fee){
+        this.dollars -= dollarsPerDoge + fee;
         this.doge++;
+        this.addInvestingXP(dollarsPerDoge);
       }
     },
     foodBought(foodCost){
       if(this.dollars >= foodCost){
         this.dollars -= foodCost;
         this.crabFood++;
+        this.addBarterXP();
       }
     },
     crabsBreed(amount){
       if(this.crabFood >= amount){
         this.crabFood -= amount;
         this.crabs += amount;
+        this.addHusbandryXP(amount);
       }
     },
     addTrappingXP(amount=1){
@@ -70,6 +95,30 @@ export default {
         this.trappingXP -= this.trappingXpToLevel;
         this.trappingLevel++;
         this.trappingXpToLevel *= this.trappingXpIncrease;
+      }
+    },
+    addHusbandryXP(amount=1){
+      this.husbandry += amount;
+      while(this.husbandryXP >= this.husbandryXpToLevel){
+        this.husbandryXP -= this.husbandryXpToLevel;
+        this.husbandryLevel++;
+        this.husbandryXpToLevel *= this.husbandryXpIncrease;
+      }
+    },
+    addBarterXP(amount=1){
+      this.barterXP += amount;
+      while(this.barterXP >= this.barterXpToLevel){
+        this.barterXP -= this.barterXpToLevel;
+        this.barterLevel++;
+        this.barterXpToLevel *= this.barterXpIncrease;
+      }
+    },
+    addInvestingXP(amount=1){
+      this.investingXP += amount;
+      while(this.investingXP >= this.investingXpToLevel){
+        this.investingXP -= this.investingXpToLevel;
+        this.investingLevel++;
+        this.investingXpToLevel *= this.investingXpIncrease;
       }
     }
   },
@@ -82,12 +131,51 @@ export default {
     },
     crabSpeed(){
       return settings.crabSpeed * this.crabSpeedUpgrade;
+    },
+    investingFee(){
+      if(this.investingLevel < 100){
+        return this.startingInvestingFee - (this.startingInvestingFee * this.investingLevel / 100);
+      }
+      else{
+        return 0;
+      }
+    },
+    investingFeeStr(){
+      return (this.investingFee * 100) + '%'
+    },
+    crabFoodCost(){
+      if(this.barterLevel < 100){
+        return this.startingFoodPrice - (this.startingFoodPrice * this.barterLevel / 100) + 0.5;
+      }
+      else{
+        return 0.5;
+      }
+    },
+    breedingAdjustment(){
+      if(this.husbandryLevel < 100){
+        return 1 + this.husbandryLevel / 100;
+      }
+      else{
+        return 2;
+      }
+    },
+    adjustedBreedingRate(){
+      return this.startingBreedingrate * this.breedingAdjustment;
+    },
+    trappingAdjustemnt(){
+      if(this.trappingLevel < 100){
+        return 1 + this.trappingLevel / 10;
+      }
+      else{
+        return 11;
+      }
     }
   }
 }
 </script>
 
 <template>
+<h2>Items</h2>
 <p>Crabs: {{this.crabs}}</p>
 <p>${{this.dollars.toFixed(2)}}</p>
 <p>DogeCoin: {{this.doge}}</p>
@@ -95,19 +183,24 @@ export default {
 <br>
 <h2>Skills</h2>
 <p>Trapping: {{this.trappingLevel}}</p>
+<p>Husabndry: {{this.husbandryLevel}}</p>
+<p>Barter: {{this.barterLevel}}</p>
+<p>Investing: {{this.investingLevel}}</p>
 <CrabButton @crab="crabFound" :waitingTicks="this.crabWaitingTime" :successChance="this.crabChance" :millisPerTick="this.crabSpeed"></CrabButton>
 <br>
 <crabBreeding 
 :crabFood="this.crabFood"
 :crabs="this.crabs"
 :dollars="this.dollars"
-:breedRate="1.25"
+:breedRate="this.adjustedBreedingRate"
 :millisPerTick="100"
 :ticksPerBreed="100"
-:crabFoodCost="1.5"
+:crabFoodCost="this.crabFoodCost"
 @foodBought="this.foodBought"
 @crabsBreed="this.crabsBreed"
 ></crabBreeding>
+<h2>Trading</h2>
+<p>Your current trading fee is {{this.investingFeeStr}}</p>
 <RandForex 
 @sell="crabSold" 
 @buy="crabBought" 

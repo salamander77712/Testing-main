@@ -108,7 +108,7 @@ export default {
 
 <template>
 <div>
-  <h2>Convert {{this.currencyFrom}} To {{this.currencyTo}}</h2>
+  <h3>Convert {{this.currencyFrom}} To {{this.currencyTo}}</h3>
   <p>1 {{this.currencyFrom}} is currently worth {{this.priceRounded}} {{this.currencyTo}}</p>
   <button @click="$emit('buy', this.priceRounded)">Buy 1 {{this.currencyFrom}}</button>
   <button @click="$emit('sell', this.priceRounded)">Sell 1 {{this.currencyFrom}}</button>
