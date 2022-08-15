@@ -16,12 +16,17 @@ export default {
       crabFood: 0,
       crabSpeedUpgrade: 1,
       crabWaitingUpgrade: 1,
-      crabChanceUpgrade: 1
+      crabChanceUpgrade: 1,
+      trappingLevel: 0,
+      trappingXP: 0,
+      trappingXpToLevel: 10,
+      trappingXpIncrease: 1.1
     }
   },
   methods:{
     crabFound(){
       this.crabs++;
+      this.addTrappingXP();
     },
     crabSold(dollarsPerCrab){
       if(this.crabs >= 1){
@@ -58,6 +63,14 @@ export default {
         this.crabFood -= amount;
         this.crabs += amount;
       }
+    },
+    addTrappingXP(amount=1){
+      this.trappingXP += amount;
+      while(this.trappingXP >= this.trappingXpToLevel){
+        this.trappingXP -= this.trappingXpToLevel;
+        this.trappingLevel++;
+        this.trappingXpToLevel *= this.trappingXpIncrease;
+      }
     }
   },
   computed: {
@@ -79,6 +92,9 @@ export default {
 <p>${{this.dollars.toFixed(2)}}</p>
 <p>DogeCoin: {{this.doge}}</p>
 <p>CrabFood: {{this.crabFood}}</p>
+<br>
+<h2>Skills</h2>
+<p>Trapping: {{this.trappingLevel}}</p>
 <CrabButton @crab="crabFound" :waitingTicks="this.crabWaitingTime" :successChance="this.crabChance" :millisPerTick="this.crabSpeed"></CrabButton>
 <br>
 <crabBreeding 
