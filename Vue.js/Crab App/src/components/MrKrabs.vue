@@ -7,7 +7,7 @@ import settings from '../data/settings.json'
 
 <script>
 export default {
-  emits: ['crab', 'buy', 'sell', 'foodBought', 'crabsBreed'],
+  emits: ['crab', 'buy', 'sell', 'foodBought', 'crabsBreed', 'noCrab'],
   data() {
     return {
       crabs: 0,
@@ -35,13 +35,18 @@ export default {
       investingXpIncrease: 1.1,
       startingInvestingFee: 0.1,
       startingFoodPrice: 1,
-      startingBreedingrate: 1.25
+      startingBreedingrate: 1.25,
+      crabMessage: ""
     }
   },
   methods:{
     crabFound(){
       this.crabs += this.trappingAdjustemnt;
       this.addTrappingXP();
+      this.crabMessage = "You Found a Crab!";
+    },
+    crabNotFound(){
+      this.crabMessage = "You failed to find any crabs...";
     },
     crabSold(dollarsPerCrab){
       let fee = (this.investingFee * dollarsPerCrab) + dollarsPerCrab
@@ -175,32 +180,35 @@ export default {
 </script>
 
 <template>
+<div class="center">
 <h2>Items</h2>
-<p>Crabs: {{this.crabs}}</p>
-<p>${{this.dollars.toFixed(2)}}</p>
-<p>DogeCoin: {{this.doge}}</p>
-<p>CrabFood: {{this.crabFood}}</p>
-<br>
+<p>Crabs: {{crabs}}</p>
+<p>${{dollars.toFixed(2)}}</p>
+<p>DogeCoin: {{doge}}</p>
+<p>CrabFood: {{crabFood}}</p>
 <h2>Skills</h2>
-<p>Trapping: {{this.trappingLevel}}</p>
-<p>Husabndry: {{this.husbandryLevel}}</p>
-<p>Barter: {{this.barterLevel}}</p>
-<p>Investing: {{this.investingLevel}}</p>
-<CrabButton @crab="crabFound" :waitingTicks="this.crabWaitingTime" :successChance="this.crabChance" :millisPerTick="this.crabSpeed"></CrabButton>
-<br>
+<p>Trapping: {{trappingLevel}}</p>
+<p>Husabndry: {{husbandryLevel}}</p>
+<p>Barter: {{barterLevel}}</p>
+<p>Investing: {{investingLevel}}</p>
+<h2>Trapping</h2>
+<CrabButton @crab="crabFound" @noCrab="crabNotFound" :waitingTicks="crabWaitingTime" :successChance="crabChance" :millisPerTick="crabSpeed"></CrabButton>
+<p>{{crabMessage}}</p>
+<h2>Breeding</h2>
 <crabBreeding 
-:crabFood="this.crabFood"
-:crabs="this.crabs"
-:dollars="this.dollars"
-:breedRate="this.adjustedBreedingRate"
+:crabFood="crabFood"
+:crabs="crabs"
+:dollars="dollars"
+:breedRate="adjustedBreedingRate"
 :millisPerTick="100"
 :ticksPerBreed="100"
-:crabFoodCost="this.crabFoodCost"
-@foodBought="this.foodBought"
-@crabsBreed="this.crabsBreed"
+:crabFoodCost="crabFoodCost"
+@foodBought="foodBought"
+@crabsBreed="crabsBreed"
 ></crabBreeding>
 <h2>Trading</h2>
-<p>Your current trading fee is {{this.investingFeeStr}}</p>
+<p>Your current trading fee is {{investingFeeStr}}</p>
+<div class="center">
 <RandForex 
 @sell="crabSold" 
 @buy="crabBought" 
@@ -225,8 +233,15 @@ currencyTo="Dollars"
 :startingPrice="settings.dogeStartingPrice"
 :priceHistoryLength="100"
 ></RandForex>
+</div>
+</div>
 </template>
 
 <style scoped>
-
+div.center{
+  margin: auto;
+  width: 50%;
+  padding: 10px;
+  text-align: center;
+}
 </style>

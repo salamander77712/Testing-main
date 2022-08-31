@@ -1,7 +1,7 @@
 <script>
 export default {
   props: ['waitingTicks', 'successChance', 'millisPerTick'],
-  emits: ['crab'],
+  emits: ['crab', 'noCrab'],
   data() {
     return {
       ticksLocked : 0
@@ -15,6 +15,9 @@ export default {
         this.ticksLocked = 0;
         if(Math.floor(Math.random() * this.successChance) == 0){
           this.$emit('crab');
+        }
+        else{
+          this.$emit('noCrab');
         }
         clearInterval(waitingLoop);
       }

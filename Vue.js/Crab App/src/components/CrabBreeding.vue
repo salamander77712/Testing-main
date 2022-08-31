@@ -46,7 +46,7 @@ export default {
 
 <template>
 <div>
-  <button @click="this.buyFood" :disabled="this.disableBuying">Buy 1 Crab Food For ${{this.crabFoodCost.toFixed(2)}}</button>
+  <button @click="buyFood" :disabled="disableBuying">Buy 1 Crab Food For ${{crabFoodCost.toFixed(2)}}</button>
   <br>
   <span>Your Crabs Are Making More Crabs</span>
 </div>

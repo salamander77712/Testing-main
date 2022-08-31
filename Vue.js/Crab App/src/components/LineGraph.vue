@@ -59,8 +59,8 @@ export default {
 <template>
 
 <Line 
-:chart-data = "this.chartData"
-:chart-options = "this.chartOptions"
+:chart-data = "chartData"
+:chart-options = "chartOptions"
 />
 
 </template>
