@@ -108,15 +108,15 @@ export default {
 
 <template>
 <div>
-  <h3>Convert {{this.currencyFrom}} To {{this.currencyTo}}</h3>
-  <p>1 {{this.currencyFrom}} is currently worth {{this.priceRounded}} {{this.currencyTo}}</p>
-  <button @click="$emit('buy', this.priceRounded)">Buy 1 {{this.currencyFrom}}</button>
-  <button @click="$emit('sell', this.priceRounded)">Sell 1 {{this.currencyFrom}}</button>
+  <h3>Convert {{currencyFrom}} To {{currencyTo}}</h3>
+  <p>1 {{currencyFrom}} is currently worth {{priceRounded}} {{currencyTo}}</p>
+  <button @click="$emit('buy', priceRounded)">Buy 1 {{currencyFrom}}</button>
+  <button @click="$emit('sell', priceRounded)">Sell 1 {{currencyFrom}}</button>
   <div class="graph">
   <LineGraph
-  :labels="this.labels" 
-  :values="this.chartData"
-  :title="this.currencyFrom + ' To ' + this.currencyTo"
+  :labels="labels" 
+  :values="chartData"
+  :title="currencyFrom + ' To ' + currencyTo"
   :min="0"
   :max="5"
   >
